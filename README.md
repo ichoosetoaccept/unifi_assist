@@ -39,11 +39,13 @@ The UniFi Network API allows you to:
 ## Authentication
 
 The UniFi Network API uses API key authentication. You'll need to:
+
 1. Generate an API key in your UniFi Network Application
 2. Include it in the `X-API-KEY` header with each request
 3. Use HTTPS for all API calls
 
 Example API call:
+
 ```bash
 curl -k -X GET 'https://192.168.1.1/proxy/network/integration/v1/sites' \
   -H 'X-API-KEY: YOUR_API_KEY' \
@@ -53,19 +55,24 @@ curl -k -X GET 'https://192.168.1.1/proxy/network/integration/v1/sites' \
 ## Project Setup
 
 ### For Users
+
 Once this package is published to PyPI, you can install it using:
+
 ```bash
 uv tool install unifi-assist
 ```
 
 ### For Development
+
 1. Clone the repository
 2. Install dependencies:
+
 ```bash
 uv sync
 ```
 
 This will:
+
 - Create a virtual environment if it doesn't exist
 - Install all development and runtime dependencies
 - Generate/update the lockfile
@@ -90,5 +97,5 @@ UNIFI_HOST/integration/v1/sites - GET
 UNIFI_HOST/integration/v1/sites/{siteId}/clients - GET
 UNIFI_HOST/integration/v1/info - GET
 
-The official Unifi example uses this: https://unifi.ui.com/integration/v1/info.
+The official Unifi example uses this: <https://unifi.ui.com/integration/v1/info>.
 This means that https:// may be required as well before UNIFI_HOST?
