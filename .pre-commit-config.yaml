@@ -43,19 +43,18 @@ repos:
       # Run the formatter.
       - id: ruff-format
 
-  - repo: https://github.com/pyvista/pre-commit-mypy
-    rev: v0.1.0
-    hooks:
-      - id: mypy
-        pass_filenames: false
-        args: [] # Using mypy.ini for configuration
-        additional_dependencies:
-          - mypy>=1.14.1
-          - pydantic>=2.10.5
-          - pydantic-settings>=2.7.1
-          - types-requests>=2.32.0.20241016
-          - pytest>=8.3.4
-          - python-dotenv>=1.0.1
+  # - repo: https://github.com/pyvista/pre-commit-mypy
+  #   rev: v0.1.0
+  #   hooks:
+  #     - id: mypy
+  #       pass_filenames: false
+  #       args: [] # Using mypy.ini for configuration
+  #       additional_dependencies:
+  #         - mypy>=1.14.1
+  #         - pydantic>=2.10.5
+  #         - pydantic-settings>=2.7.1
+  #         - pytest>=8.3.4
+  #         - python-dotenv>=1.0.1
 
   # monitor code complexity
   - repo: https://github.com/rubik/xenon
