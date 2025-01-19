@@ -3,6 +3,8 @@ import aiohttp
 import os
 import logging
 from dotenv import load_dotenv
+import structlog
+from .logging import setup_logging
 
 # Load environment variables
 load_dotenv()
@@ -16,7 +18,7 @@ class UniFiClient:
         host: Optional[str] = None,
         api_key: Optional[str] = None,
         verify_ssl: bool = True,
-        logger: Optional[logging.Logger] = None,
+        logger: Optional[structlog.BoundLogger] = None,
     ):
         """Initialize the UniFi client.
 
@@ -24,7 +26,7 @@ class UniFiClient:
             host: UniFi Network Application host (e.g. 192.168.1.1)
             api_key: API key for authentication
             verify_ssl: Whether to verify SSL certificates
-            logger: Logger instance
+            logger: Structured logger instance
         """
         self.host = host or os.getenv("UNIFI_HOST")
         if not self.host:
@@ -39,8 +41,14 @@ class UniFiClient:
             )
 
         self.verify_ssl = verify_ssl
-        self.logger = logger or logging.getLogger("unifi_client")
-        self.logger.debug(f"Initializing UniFi client for host: {self.host}")
+
+        # Reset logging handlers to ensure we get a fresh logger
+        root_logger = logging.getLogger()
+        for handler in root_logger.handlers[:]:
+            root_logger.removeHandler(handler)
+
+        self.logger = logger or setup_logging("unifi_client", log_to_file=True)
+        self.logger.debug("initializing_client", host=self.host)
 
         self.session = aiohttp.ClientSession(
             headers={"Accept": "application/json", "X-API-KEY": self.api_key}
@@ -60,9 +68,12 @@ class UniFiClient:
             Response data as a dictionary
         """
         url = f"https://{self.host}/{endpoint}"
+        self.logger.debug("making_get_request", url=url)
         async with self.session.get(url, ssl=self.verify_ssl) as response:
             response.raise_for_status()
-            return await response.json()
+            data = await response.json()
+            self.logger.debug("get_request_complete", url=url, status=response.status)
+            return data
 
     async def _post(self, endpoint: str, data: dict) -> dict:
         """Make a POST request to the UniFi API.
@@ -75,9 +86,12 @@ class UniFiClient:
             Response data as a dictionary
         """
         url = f"https://{self.host}/{endpoint}"
+        self.logger.debug("making_post_request", url=url, data=data)
         async with self.session.post(url, json=data, ssl=self.verify_ssl) as response:
             response.raise_for_status()
-            return await response.json()
+            resp_data = await response.json()
+            self.logger.debug("post_request_complete", url=url, status=response.status)
+            return resp_data
 
     async def get_sites(self) -> dict:
         """Get list of all sites.
@@ -165,10 +179,10 @@ class UniFiClient:
 
     async def __aenter__(self):
         """Async context manager entry."""
-        self.logger.debug("Entering async context")
+        self.logger.debug("entering_async_context")
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         """Async context manager exit."""
-        self.logger.debug("Exiting async context")
+        self.logger.debug("exiting_async_context")
         await self.close()

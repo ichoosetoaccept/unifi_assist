@@ -24,6 +24,27 @@ async def client():
 
 
 @pytest.mark.asyncio
+async def test_client_initialization(monkeypatch):
+    """Test client initialization with different parameters."""
+    # Remove environment variables to test explicit parameters
+    monkeypatch.delenv("UNIFI_HOST", raising=False)
+    monkeypatch.delenv("UNIFI_API_KEY", raising=False)
+
+    # Test with explicit parameters
+    async with UniFiClient(host=TEST_HOST, api_key=TEST_API_KEY) as client:
+        assert client.host == TEST_HOST
+        assert client.api_key == TEST_API_KEY
+        assert client.verify_ssl is True  # default value
+
+    # Test with invalid parameters
+    with pytest.raises(ValueError, match="Host must be provided"):
+        UniFiClient(host=None, api_key=TEST_API_KEY)
+
+    with pytest.raises(ValueError, match="API key must be provided"):
+        UniFiClient(host=TEST_HOST, api_key=None)
+
+
+@pytest.mark.asyncio
 async def test_get_system_info(client):
     """Test getting system information."""
     response = await client.get_system_info()
@@ -63,7 +84,6 @@ async def test_get_devices(client):
 @pytest.mark.asyncio
 async def test_get_clients(client):
     """Test getting clients for a site."""
-    # First get sites to get a valid site_id
     sites_response = await client.get_sites()
     sites = sites_response.get("sites", []) or sites_response.get("data", [])
     assert sites, "No sites found to test with"
@@ -82,7 +102,6 @@ async def test_get_clients(client):
 @pytest.mark.asyncio
 async def test_get_device_details_and_statistics(client):
     """Test getting device details and statistics."""
-    # First get sites to get a valid site_id
     sites_response = await client.get_sites()
     sites = sites_response.get("sites", []) or sites_response.get("data", [])
     assert sites, "No sites found to test with"
@@ -107,3 +126,25 @@ async def test_get_device_details_and_statistics(client):
     # Test device statistics
     stats_response = await client.get_device_statistics(site_id, device_id)
     assert isinstance(stats_response, dict)
+
+
+@pytest.mark.asyncio
+async def test_invalid_site_id(client):
+    """Test behavior with invalid site ID."""
+    with pytest.raises(Exception):  # Should get an API error
+        await client.get_devices("invalid_site_id")
+
+
+@pytest.mark.asyncio
+async def test_invalid_device_id(client):
+    """Test behavior with invalid device ID."""
+    # First get a valid site_id
+    sites_response = await client.get_sites()
+    sites = sites_response.get("sites", []) or sites_response.get("data", [])
+    assert sites, "No sites found to test with"
+
+    site_id = sites[0].get("id")
+    assert site_id, "Could not get site_id from response"
+
+    with pytest.raises(Exception):  # Should get an API error
+        await client.get_device_details(site_id, "invalid_device_id")
