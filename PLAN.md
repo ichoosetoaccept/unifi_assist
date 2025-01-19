@@ -1,5 +1,17 @@
 # UniFi Assist Development Plan
 
+## Phase 0: Project Setup
+
+- 🚧 Implement Git Branch Strategy
+  - ✅ Configure branch protection for `main` (using pre-commit hook)
+  - 🚧 Define branch naming convention (feature/, bugfix/, etc.)
+  - 🚧 Document git workflow in README.md
+- 🚧 Implement semantic-release
+  - 🚧 Install and configure semantic-release
+  - 🚧 Set up commit message validation (commitlint)
+  - 🚧 Configure CI/CD pipeline for automated releases
+  - 🚧 Document release process in README.md
+
 ## Phase 1: Foundation Improvements
 
 - ✅ Add real API response examples
