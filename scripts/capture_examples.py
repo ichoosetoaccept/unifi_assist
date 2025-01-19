@@ -20,6 +20,10 @@ logging.basicConfig(level=logging.DEBUG)
 EXAMPLES_DIR = Path(__file__).parent.parent / "examples"
 API_RESPONSES_DIR = EXAMPLES_DIR / "api_responses"
 
+# Create directories if they don't exist
+EXAMPLES_DIR.mkdir(exist_ok=True)
+API_RESPONSES_DIR.mkdir(exist_ok=True)
+
 
 def save_response(name: str, data: dict, site: str = None):
     """Save API response to a JSON file with metadata."""
