@@ -77,3 +77,18 @@ Never commit API keys to version control. We recommend using environment variabl
 ## Development Status
 
 This project is currently in initial development. Documentation will be updated as features are implemented.
+
+## Unifi Network API endpoints
+
+UNIFI_HOST is set in `.env`.
+
+UNIFI_HOST/integration/v1/sites/{siteId}/devices/{deviceId}/actions - POST
+UNIFI_HOST/integration/v1/sites/{siteId}/devices - GET
+UNIFI_HOST/integration/v1/sites/{siteId}/devices/{deviceId} - GET
+UNIFI_HOST/integration/v1/sites/{siteId}/devices/{deviceId}/statistics/latest - GET
+UNIFI_HOST/integration/v1/sites - GET
+UNIFI_HOST/integration/v1/sites/{siteId}/clients - GET
+UNIFI_HOST/integration/v1/info - GET
+
+The official Unifi example uses this: https://unifi.ui.com/integration/v1/info.
+This means that https:// may be required as well before UNIFI_HOST?

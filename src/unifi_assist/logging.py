@@ -7,14 +7,15 @@ import sys
 from structlog.stdlib import LoggerFactory
 from structlog.processors import JSONRenderer
 
+
 def setup_logging(
     name: str = "unifi_assist",
     log_level: Optional[str] = None,
     log_to_file: Optional[bool] = None,
-    log_dir: str = "logs"
+    log_dir: str = "logs",
 ) -> structlog.BoundLogger:
     """Setup structured logging configuration.
-    
+
     Args:
         name: Logger name
         log_level: Override log level from env
@@ -23,8 +24,12 @@ def setup_logging(
     """
     # Get settings from environment or use defaults
     level = log_level or os.getenv("UNIFI_ASSIST_LOG_LEVEL", "INFO").upper()
-    to_file = log_to_file if log_to_file is not None else bool(int(os.getenv("UNIFI_ASSIST_LOG_TO_FILE", "0")))
-    
+    to_file = (
+        log_to_file
+        if log_to_file is not None
+        else bool(int(os.getenv("UNIFI_ASSIST_LOG_TO_FILE", "0")))
+    )
+
     # Configure standard logging for console
     logging.basicConfig(
         format="%(message)s",
@@ -40,7 +45,7 @@ def setup_logging(
         structlog.processors.StackInfoRenderer(),
         structlog.processors.format_exc_info,
     ]
-    
+
     # Console-specific processors
     console_processors = shared_processors.copy()
     if sys.stdout.isatty():
@@ -52,29 +57,30 @@ def setup_logging(
     if to_file:
         log_path = Path(log_dir)
         log_path.mkdir(exist_ok=True)
-        
+
         # JSON log file handler
         json_handler = logging.FileHandler(
-            log_path / f"{name}.json.log",
-            encoding="utf-8"
+            log_path / f"{name}.json.log", encoding="utf-8"
         )
         json_handler.setLevel(level)
-        json_handler.setFormatter(structlog.stdlib.ProcessorFormatter(
-            processor=JSONRenderer(),
-            foreign_pre_chain=shared_processors
-        ))
-        
+        json_handler.setFormatter(
+            structlog.stdlib.ProcessorFormatter(
+                processor=JSONRenderer(), foreign_pre_chain=shared_processors
+            )
+        )
+
         # Human-readable log file handler
         readable_handler = logging.FileHandler(
-            log_path / f"{name}.readable.log",
-            encoding="utf-8"
+            log_path / f"{name}.readable.log", encoding="utf-8"
         )
         readable_handler.setLevel(level)
-        readable_handler.setFormatter(structlog.stdlib.ProcessorFormatter(
-            processor=structlog.dev.ConsoleRenderer(colors=False),
-            foreign_pre_chain=shared_processors
-        ))
-        
+        readable_handler.setFormatter(
+            structlog.stdlib.ProcessorFormatter(
+                processor=structlog.dev.ConsoleRenderer(colors=False),
+                foreign_pre_chain=shared_processors,
+            )
+        )
+
         # Add both handlers
         logging.getLogger().addHandler(json_handler)
         logging.getLogger().addHandler(readable_handler)

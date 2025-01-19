@@ -32,89 +32,48 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "description": "Site identifier"
-                      },
-                      "name": {
-                        "type": "string",
-                        "description": "Site name"
-                      },
-                      "desc": {
-                        "type": "string",
-                        "description": "Site description"
-                      },
-                      "role": {
-                        "type": "string",
-                        "description": "User's role at this site",
-                        "enum": ["admin", "readonly", "none"]
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Site identifier"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Site name"
+                          }
+                        }
                       }
                     }
-                  }
-                },
-                "example": [
-                  {
-                    "id": "default",
-                    "name": "Default",
-                    "desc": "Default site",
-                    "role": "admin"
-                  }
-                ]
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Invalid API key",
-            "content": {
-              "application/json": {
-                "example": {
-                  "meta": {
-                    "rc": "error",
-                    "msg": "api.err.InvalidAPIKey"
                   }
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key"
           }
         }
       }
     },
-    "/proxy/network/api/s/{site}/stat/device": {
+    "/proxy/network/integration/v1/sites/{siteId}/devices": {
       "get": {
-        "summary": "Get device statistics",
-        "description": "Returns statistics for all devices in a site",
+        "summary": "List all devices",
+        "description": "Returns a list of all devices in the site",
         "parameters": [
           {
-            "name": "site",
+            "name": "siteId",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string"
             },
             "description": "Site identifier"
-          },
-          {
-            "name": "within",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Time window in hours for the statistics"
-          },
-          {
-            "name": "type",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["uap", "ugw", "usw", "udm", "unvr"]
-            },
-            "description": "Filter by device type"
           }
         ],
         "security": [
@@ -135,377 +94,31 @@
                       "items": {
                         "type": "object",
                         "properties": {
-                          "mac": {
+                          "id": {
                             "type": "string",
-                            "description": "Device MAC address"
-                          },
-                          "ip": {
-                            "type": "string",
-                            "description": "Device IP address"
-                          },
-                          "model": {
-                            "type": "string",
-                            "description": "Device model"
-                          },
-                          "model_in_lts": {
-                            "type": "boolean",
-                            "description": "Whether device model is in LTS"
-                          },
-                          "model_in_eol": {
-                            "type": "boolean",
-                            "description": "Whether device model is EOL"
-                          },
-                          "type": {
-                            "type": "string",
-                            "description": "Device type",
-                            "enum": ["uap", "ugw", "usw", "udm", "unvr"]
-                          },
-                          "version": {
-                            "type": "string",
-                            "description": "Firmware version"
-                          },
-                          "adopted": {
-                            "type": "boolean",
-                            "description": "Whether device is adopted"
-                          },
-                          "status": {
-                            "type": "string",
-                            "description": "Device status",
-                            "enum": ["online", "offline", "pending", "upgrading", "provisioning", "adopting"]
-                          },
-                          "uptime": {
-                            "type": "integer",
-                            "description": "Device uptime in seconds"
-                          },
-                          "last_seen": {
-                            "type": "integer",
-                            "description": "Last seen timestamp"
-                          },
-                          "upgradable": {
-                            "type": "boolean",
-                            "description": "Whether firmware upgrade is available"
-                          },
-                          "upgrade_to_firmware": {
-                            "type": "string",
-                            "description": "Available firmware version"
-                          },
-                          "provisioned": {
-                            "type": "boolean",
-                            "description": "Whether device is provisioned"
-                          },
-                          "satisfaction": {
-                            "type": "integer",
-                            "description": "Device satisfaction score (0-100)",
-                            "minimum": 0,
-                            "maximum": 100
-                          },
-                          "satisfaction_reason": {
-                            "type": "integer",
-                            "description": "Reason code for current satisfaction score",
-                            "enum": [0, 1, 2, 3, 4],
-                            "x-enum-descriptions": [
-                              "No issues",
-                              "High memory usage",
-                              "High CPU usage",
-                              "Poor connectivity",
-                              "Configuration issues"
-                            ]
+                            "description": "Device identifier"
                           },
                           "name": {
                             "type": "string",
                             "description": "Device name"
                           },
-                          "serial": {
+                          "model": {
                             "type": "string",
-                            "description": "Device serial number"
+                            "description": "Device model"
                           },
-                          "stat": {
-                            "type": "object",
-                            "properties": {
-                              "bytes": {
-                                "type": "integer",
-                                "description": "Total bytes transferred"
-                              },
-                              "rx_bytes": {
-                                "type": "integer",
-                                "description": "Bytes received"
-                              },
-                              "tx_bytes": {
-                                "type": "integer",
-                                "description": "Bytes transmitted"
-                              },
-                              "rx_rate": {
-                                "type": "integer",
-                                "description": "Current receive rate in bytes/sec"
-                              },
-                              "tx_rate": {
-                                "type": "integer",
-                                "description": "Current transmit rate in bytes/sec"
-                              },
-                              "wifi_tx_attempts": {
-                                "type": "integer",
-                                "description": "WiFi transmission attempts"
-                              },
-                              "wifi_tx_drops": {
-                                "type": "integer",
-                                "description": "WiFi transmission drops"
-                              }
-                            }
+                          "macAddress": {
+                            "type": "string",
+                            "description": "Device MAC address"
                           },
-                          "sys_stats": {
-                            "type": "object",
-                            "properties": {
-                              "loadavg_1": {
-                                "type": "number",
-                                "description": "1-minute load average"
-                              },
-                              "loadavg_5": {
-                                "type": "number",
-                                "description": "5-minute load average"
-                              },
-                              "loadavg_15": {
-                                "type": "number",
-                                "description": "15-minute load average"
-                              },
-                              "mem_total": {
-                                "type": "integer",
-                                "description": "Total memory in bytes"
-                              },
-                              "mem_used": {
-                                "type": "integer",
-                                "description": "Used memory in bytes"
-                              },
-                              "cpu": {
-                                "type": "number",
-                                "description": "CPU usage percentage"
-                              }
-                            }
+                          "ipAddress": {
+                            "type": "string",
+                            "description": "Device IP address"
                           },
-                          "config_network": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "enum": ["dhcp", "static"],
-                                "description": "Network configuration type"
-                              },
-                              "ip": {
-                                "type": "string",
-                                "description": "Static IP address if configured"
-                              },
-                              "netmask": {
-                                "type": "string",
-                                "description": "Network mask"
-                              },
-                              "gateway": {
-                                "type": "string",
-                                "description": "Gateway address"
-                              },
-                              "dns": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                },
-                                "description": "DNS servers"
-                              }
-                            }
-                          },
-                          "uplink": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "enum": ["wire", "wireless"],
-                                "description": "Uplink connection type"
-                              },
-                              "up": {
-                                "type": "boolean",
-                                "description": "Whether uplink is up"
-                              },
-                              "full_duplex": {
-                                "type": "boolean",
-                                "description": "Whether uplink is full duplex"
-                              },
-                              "speed": {
-                                "type": "integer",
-                                "description": "Link speed in Mbps"
-                              },
-                              "mac": {
-                                "type": "string",
-                                "description": "MAC address of uplink device"
-                              }
-                            }
-                          },
-                          "downlink_table": {
-                            "type": "array",
-                            "description": "List of devices connected downstream",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "mac": {
-                                  "type": "string",
-                                  "description": "Device MAC address"
-                                },
-                                "type": {
-                                  "type": "string",
-                                  "description": "Device type"
-                                },
-                                "port": {
-                                  "type": "integer",
-                                  "description": "Connected port number"
-                                }
-                              }
-                            }
-                          },
-                          "port_table": {
-                            "type": "array",
-                            "description": "List of ports (switches only)",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "port_idx": {
-                                  "type": "integer",
-                                  "description": "Port index"
-                                },
-                                "name": {
-                                  "type": "string",
-                                  "description": "Port name"
-                                },
-                                "up": {
-                                  "type": "boolean",
-                                  "description": "Whether port is up"
-                                },
-                                "enabled": {
-                                  "type": "boolean",
-                                  "description": "Whether port is enabled"
-                                },
-                                "poe_enabled": {
-                                  "type": "boolean",
-                                  "description": "Whether PoE is enabled"
-                                },
-                                "poe_mode": {
-                                  "type": "string",
-                                  "description": "PoE mode",
-                                  "enum": ["auto", "24v", "passthrough", "off"]
-                                },
-                                "poe_power": {
-                                  "type": "number",
-                                  "description": "PoE power draw in watts"
-                                },
-                                "speed": {
-                                  "type": "integer",
-                                  "description": "Port speed in Mbps"
-                                },
-                                "full_duplex": {
-                                  "type": "boolean",
-                                  "description": "Whether port is full duplex"
-                                }
-                              }
-                            }
+                          "state": {
+                            "type": "string",
+                            "description": "Device state"
                           }
                         }
-                      }
-                    }
-                  }
-                },
-                "examples": {
-                  "access_point": {
-                    "summary": "Access Point Example",
-                    "value": {
-                      "data": [
-                        {
-                          "mac": "f0:9f:c2:00:00:00",
-                          "ip": "192.168.1.6",
-                          "model": "U6-Lite",
-                          "model_in_lts": false,
-                          "model_in_eol": false,
-                          "type": "uap",
-                          "version": "7.4.162",
-                          "adopted": true,
-                          "status": "online",
-                          "uptime": 1234567,
-                          "last_seen": 1705609846,
-                          "upgradable": false,
-                          "provisioned": true,
-                          "satisfaction": 98,
-                          "satisfaction_reason": 0,
-                          "sys_stats": {
-                            "loadavg_1": 0.15,
-                            "loadavg_5": 0.10,
-                            "loadavg_15": 0.05,
-                            "mem_total": 536870912,
-                            "mem_used": 128000000,
-                            "cpu": 5.2
-                          },
-                          "config_network": {
-                            "type": "dhcp",
-                            "ip": "192.168.1.6",
-                            "netmask": "255.255.255.0",
-                            "gateway": "192.168.1.1",
-                            "dns": ["192.168.1.1", "1.1.1.1"]
-                          },
-                          "uplink": {
-                            "type": "wire",
-                            "up": true,
-                            "full_duplex": true,
-                            "speed": 1000,
-                            "mac": "74:83:c2:00:00:00"
-                          },
-                          "name": "Office AP",
-                          "serial": "FCDE12345678",
-                          "stat": {
-                            "bytes": 1234567890,
-                            "rx_bytes": 987654321,
-                            "tx_bytes": 246913578,
-                            "rx_rate": 1024000,
-                            "tx_rate": 512000,
-                            "wifi_tx_attempts": 1000000,
-                            "wifi_tx_drops": 1000
-                          }
-                        }
-                      ],
-                      "meta": {
-                        "rc": "ok"
-                      }
-                    }
-                  },
-                  "switch": {
-                    "summary": "Switch Example",
-                    "value": {
-                      "data": [
-                        {
-                          "mac": "74:83:c2:00:00:00",
-                          "ip": "192.168.1.7",
-                          "model": "USW-24-PoE",
-                          "type": "usw",
-                          "version": "7.4.162",
-                          "adopted": true,
-                          "status": "online",
-                          "uptime": 2345678,
-                          "last_seen": 1705609846,
-                          "upgradable": true,
-                          "upgrade_to_firmware": "7.5.187",
-                          "provisioned": true,
-                          "satisfaction": 100,
-                          "name": "Core Switch",
-                          "serial": "74SE12345678",
-                          "port_table": [
-                            {
-                              "port_idx": 1,
-                              "name": "Port 1",
-                              "up": true,
-                              "enabled": true,
-                              "poe_enabled": true,
-                              "poe_mode": "auto",
-                              "poe_power": 7.45,
-                              "speed": 1000,
-                              "full_duplex": true
-                            }
-                          ]
-                        }
-                      ],
-                      "meta": {
-                        "rc": "ok"
                       }
                     }
                   }
@@ -514,41 +127,18 @@
             }
           },
           "401": {
-            "description": "Unauthorized - Invalid API key",
-            "content": {
-              "application/json": {
-                "example": {
-                  "meta": {
-                    "rc": "error",
-                    "msg": "api.err.InvalidAPIKey"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Site not found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "meta": {
-                    "rc": "error",
-                    "msg": "api.err.SiteNotFound"
-                  }
-                }
-              }
-            }
+            "description": "Unauthorized - Invalid API key"
           }
         }
       }
     },
-    "/proxy/network/api/s/{site}/stat/sta": {
+    "/proxy/network/integration/v1/sites/{siteId}/devices/{deviceId}": {
       "get": {
-        "summary": "Get client statistics",
-        "description": "Returns statistics for all connected clients in a site",
+        "summary": "Get device details",
+        "description": "Returns detailed information about a specific device",
         "parameters": [
           {
-            "name": "site",
+            "name": "siteId",
             "in": "path",
             "required": true,
             "schema": {
@@ -557,14 +147,121 @@
             "description": "Site identifier"
           },
           {
-            "name": "type",
-            "in": "query",
-            "required": false,
+            "name": "deviceId",
+            "in": "path",
+            "required": true,
             "schema": {
-              "type": "string",
-              "enum": ["all", "active", "disconnected"]
+              "type": "string"
             },
-            "description": "Filter by client connection status"
+            "description": "Device identifier"
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key"
+          }
+        }
+      }
+    },
+    "/proxy/network/integration/v1/sites/{siteId}/devices/{deviceId}/statistics/latest": {
+      "get": {
+        "summary": "Get device statistics",
+        "description": "Returns the latest statistics for a specific device",
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Site identifier"
+          },
+          {
+            "name": "deviceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Device identifier"
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key"
+          }
+        }
+      }
+    },
+    "/proxy/network/integration/v1/sites/{siteId}/devices/{deviceId}/actions": {
+      "post": {
+        "summary": "Perform device actions",
+        "description": "Execute actions on a specific device",
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Site identifier"
+          },
+          {
+            "name": "deviceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Device identifier"
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API key"
+          }
+        }
+      }
+    },
+    "/proxy/network/integration/v1/sites/{siteId}/clients": {
+      "get": {
+        "summary": "List all clients",
+        "description": "Returns a list of all clients in the site",
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Site identifier"
           }
         ],
         "security": [
@@ -585,217 +282,27 @@
                       "items": {
                         "type": "object",
                         "properties": {
-                          "mac": {
+                          "id": {
+                            "type": "string",
+                            "description": "Client identifier"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Client name"
+                          },
+                          "macAddress": {
                             "type": "string",
                             "description": "Client MAC address"
                           },
-                          "ip": {
+                          "ipAddress": {
                             "type": "string",
                             "description": "Client IP address"
                           },
-                          "hostname": {
+                          "type": {
                             "type": "string",
-                            "description": "Client hostname"
-                          },
-                          "name": {
-                            "type": "string",
-                            "description": "Client name (if set)"
-                          },
-                          "first_seen": {
-                            "type": "integer",
-                            "description": "First seen timestamp"
-                          },
-                          "last_seen": {
-                            "type": "integer",
-                            "description": "Last seen timestamp"
-                          },
-                          "is_wired": {
-                            "type": "boolean",
-                            "description": "Whether client is connected via wire"
-                          },
-                          "is_guest": {
-                            "type": "boolean",
-                            "description": "Whether client is on guest network"
-                          },
-                          "network": {
-                            "type": "string",
-                            "description": "Network name"
-                          },
-                          "network_id": {
-                            "type": "string",
-                            "description": "Network identifier"
-                          },
-                          "oui": {
-                            "type": "string",
-                            "description": "Manufacturer OUI"
-                          },
-                          "radio": {
-                            "type": "string",
-                            "description": "Radio band (na or ng)",
-                            "enum": ["na", "ng", ""]
-                          },
-                          "radio_name": {
-                            "type": "string",
-                            "description": "Radio name (5GHz or 2.4GHz)"
-                          },
-                          "essid": {
-                            "type": "string",
-                            "description": "SSID name"
-                          },
-                          "channel": {
-                            "type": "integer",
-                            "description": "WiFi channel"
-                          },
-                          "satisfaction": {
-                            "type": "integer",
-                            "description": "Client satisfaction score (0-100)",
-                            "minimum": 0,
-                            "maximum": 100
-                          },
-                          "blocked": {
-                            "type": "boolean",
-                            "description": "Whether client is blocked"
-                          },
-                          "anomalies": {
-                            "type": "integer",
-                            "description": "Number of anomalies detected"
-                          },
-                          "stat": {
-                            "type": "object",
-                            "properties": {
-                              "signal": {
-                                "type": "integer",
-                                "description": "Signal strength in dBm"
-                              },
-                              "noise": {
-                                "type": "integer",
-                                "description": "Noise floor in dBm"
-                              },
-                              "rx_rate": {
-                                "type": "integer",
-                                "description": "Receive rate in Mbps"
-                              },
-                              "tx_rate": {
-                                "type": "integer",
-                                "description": "Transmit rate in Mbps"
-                              },
-                              "rx_bytes": {
-                                "type": "integer",
-                                "description": "Total bytes received"
-                              },
-                              "tx_bytes": {
-                                "type": "integer",
-                                "description": "Total bytes transmitted"
-                              },
-                              "rx_packets": {
-                                "type": "integer",
-                                "description": "Total packets received"
-                              },
-                              "tx_packets": {
-                                "type": "integer",
-                                "description": "Total packets transmitted"
-                              },
-                              "tx_retries": {
-                                "type": "integer",
-                                "description": "Total transmission retries"
-                              },
-                              "wifi_tx_attempts": {
-                                "type": "integer",
-                                "description": "WiFi transmission attempts"
-                              },
-                              "wifi_tx_drops": {
-                                "type": "integer",
-                                "description": "WiFi transmission drops"
-                              }
-                            }
+                            "description": "Client type (WIRED, WIRELESS)"
                           }
                         }
-                      }
-                    },
-                    "meta": {
-                      "type": "object",
-                      "properties": {
-                        "rc": {
-                          "type": "string",
-                          "description": "Response code"
-                        }
-                      }
-                    }
-                  }
-                },
-                "examples": {
-                  "wireless_client": {
-                    "summary": "Wireless Client Example",
-                    "value": {
-                      "data": [
-                        {
-                          "mac": "aa:bb:cc:00:11:22",
-                          "ip": "192.168.1.100",
-                          "hostname": "iPhone",
-                          "name": "John's iPhone",
-                          "first_seen": 1705509846,
-                          "last_seen": 1705609846,
-                          "is_wired": false,
-                          "is_guest": false,
-                          "network": "Main Network",
-                          "network_id": "012345678901234567890123",
-                          "oui": "Apple, Inc.",
-                          "radio": "na",
-                          "radio_name": "5GHz",
-                          "essid": "MyWiFi",
-                          "channel": 36,
-                          "satisfaction": 95,
-                          "blocked": false,
-                          "anomalies": 0,
-                          "stat": {
-                            "signal": -65,
-                            "noise": -95,
-                            "rx_rate": 866,
-                            "tx_rate": 866,
-                            "rx_bytes": 1234567890,
-                            "tx_bytes": 987654321,
-                            "rx_packets": 1234567,
-                            "tx_packets": 987654,
-                            "tx_retries": 1000,
-                            "wifi_tx_attempts": 988654,
-                            "wifi_tx_drops": 1000
-                          }
-                        }
-                      ],
-                      "meta": {
-                        "rc": "ok"
-                      }
-                    }
-                  },
-                  "wired_client": {
-                    "summary": "Wired Client Example",
-                    "value": {
-                      "data": [
-                        {
-                          "mac": "aa:bb:cc:00:22:33",
-                          "ip": "192.168.1.101",
-                          "hostname": "Desktop-PC",
-                          "name": "Office Desktop",
-                          "first_seen": 1705509846,
-                          "last_seen": 1705609846,
-                          "is_wired": true,
-                          "is_guest": false,
-                          "network": "LAN",
-                          "network_id": "012345678901234567890124",
-                          "oui": "Intel Corporate",
-                          "satisfaction": 100,
-                          "blocked": false,
-                          "anomalies": 0,
-                          "stat": {
-                            "rx_bytes": 9876543210,
-                            "tx_bytes": 8765432109,
-                            "rx_packets": 9876543,
-                            "tx_packets": 8765432
-                          }
-                        }
-                      ],
-                      "meta": {
-                        "rc": "ok"
                       }
                     }
                   }
@@ -804,352 +311,15 @@
             }
           },
           "401": {
-            "description": "Unauthorized - Invalid API key",
-            "content": {
-              "application/json": {
-                "example": {
-                  "meta": {
-                    "rc": "error",
-                    "msg": "api.err.InvalidAPIKey"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Site not found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "meta": {
-                    "rc": "error",
-                    "msg": "api.err.SiteNotFound"
-                  }
-                }
-              }
-            }
+            "description": "Unauthorized - Invalid API key"
           }
         }
       }
     },
-    "/proxy/network/api/s/{site}/cmd/stamgr": {
-      "post": {
-        "summary": "Manage client devices",
-        "description": "Perform actions on client devices such as blocking/unblocking",
-        "parameters": [
-          {
-            "name": "site",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Site identifier"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["cmd", "mac"],
-                "properties": {
-                  "cmd": {
-                    "type": "string",
-                    "enum": ["block-sta", "unblock-sta", "forget-sta"],
-                    "description": "Command to execute"
-                  },
-                  "mac": {
-                    "type": "string",
-                    "description": "MAC address of the client"
-                  }
-                }
-              },
-              "examples": {
-                "block_client": {
-                  "summary": "Block a client",
-                  "value": {
-                    "cmd": "block-sta",
-                    "mac": "aa:bb:cc:00:11:22"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Command executed successfully",
-            "content": {
-              "application/json": {
-                "example": {
-                  "meta": {
-                    "rc": "ok"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/proxy/network/api/s/{site}/cmd/devmgr": {
-      "post": {
-        "summary": "Manage network devices",
-        "description": "Perform actions on network devices such as adopting, forgetting, or upgrading",
-        "parameters": [
-          {
-            "name": "site",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Site identifier"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["cmd", "mac"],
-                "properties": {
-                  "cmd": {
-                    "type": "string",
-                    "enum": [
-                      "adopt",
-                      "forget",
-                      "upgrade",
-                      "restart",
-                      "force-provision",
-                      "set-locate",
-                      "unset-locate",
-                      "move"
-                    ],
-                    "description": "Command to execute"
-                  },
-                  "mac": {
-                    "type": "string",
-                    "description": "MAC address of the device"
-                  },
-                  "site": {
-                    "type": "string",
-                    "description": "Target site ID when using move command"
-                  }
-                }
-              },
-              "examples": {
-                "locate_device": {
-                  "summary": "Enable device location LED",
-                  "value": {
-                    "cmd": "set-locate",
-                    "mac": "f0:9f:c2:00:00:00"
-                  }
-                },
-                "move_device": {
-                  "summary": "Move device to another site",
-                  "value": {
-                    "cmd": "move",
-                    "mac": "f0:9f:c2:00:00:00",
-                    "site": "abcdef123456789"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Command executed successfully",
-            "content": {
-              "application/json": {
-                "example": {
-                  "meta": {
-                    "rc": "ok"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/proxy/network/api/s/{site}/stat/health": {
-      "get": {
-        "summary": "Get network health statistics",
-        "description": "Returns health metrics for the network including subsystem status",
-        "parameters": [
-          {
-            "name": "site",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Site identifier"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "subsystem": {
-                            "type": "string",
-                            "description": "Subsystem name",
-                            "enum": ["wan", "lan", "wlan", "vpn"]
-                          },
-                          "status": {
-                            "type": "string",
-                            "description": "Health status",
-                            "enum": ["ok", "warning", "critical"]
-                          },
-                          "num_user": {
-                            "type": "integer",
-                            "description": "Number of users"
-                          },
-                          "num_guest": {
-                            "type": "integer",
-                            "description": "Number of guests"
-                          },
-                          "num_iot": {
-                            "type": "integer",
-                            "description": "Number of IoT devices"
-                          },
-                          "tx_bytes-r": {
-                            "type": "integer",
-                            "description": "Current transmit rate in bytes/sec"
-                          },
-                          "rx_bytes-r": {
-                            "type": "integer",
-                            "description": "Current receive rate in bytes/sec"
-                          },
-                          "status_vpn": {
-                            "type": "string",
-                            "enum": ["connected", "disconnected", "connecting"],
-                            "description": "VPN connection status"
-                          },
-                          "num_disconnected": {
-                            "type": "integer",
-                            "description": "Number of disconnected devices"
-                          },
-                          "gw_system_stats": {
-                            "type": "object",
-                            "properties": {
-                              "cpu": {
-                                "type": "number",
-                                "description": "Gateway CPU usage percentage"
-                              },
-                              "mem": {
-                                "type": "number",
-                                "description": "Gateway memory usage percentage"
-                              },
-                              "uptime": {
-                                "type": "integer",
-                                "description": "Gateway uptime in seconds"
-                              },
-                              "temperature": {
-                                "type": "number",
-                                "description": "Gateway temperature in Celsius"
-                              }
-                            }
-                          },
-                          "speedtest_status": {
-                            "type": "object",
-                            "properties": {
-                              "status": {
-                                "type": "string",
-                                "enum": ["Idle", "Running", "Failed"],
-                                "description": "Speedtest status"
-                              },
-                              "last_run": {
-                                "type": "integer",
-                                "description": "Last speedtest timestamp"
-                              },
-                              "download": {
-                                "type": "number",
-                                "description": "Download speed in Mbps"
-                              },
-                              "upload": {
-                                "type": "number",
-                                "description": "Upload speed in Mbps"
-                              },
-                              "latency": {
-                                "type": "number",
-                                "description": "Latency in milliseconds"
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                },
-                "example": {
-                  "data": [
-                    {
-                      "subsystem": "wan",
-                      "status": "ok",
-                      "status_vpn": "connected",
-                      "num_disconnected": 1,
-                      "gw_system_stats": {
-                        "cpu": 15.2,
-                        "mem": 45.6,
-                        "uptime": 1234567,
-                        "temperature": 42.5
-                      },
-                      "speedtest_status": {
-                        "status": "Idle",
-                        "last_run": 1705609846,
-                        "download": 235.5,
-                        "upload": 24.8,
-                        "latency": 12.3
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/proxy/network/api/s/{site}/stat/sysinfo": {
+    "/proxy/network/integration/v1/info": {
       "get": {
         "summary": "Get system information",
-        "description": "Returns system information including version and update status",
-        "parameters": [
-          {
-            "name": "site",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Site identifier"
-          }
-        ],
+        "description": "Returns system information including version",
         "security": [
           {
             "ApiKeyAuth": []
@@ -1163,139 +333,17 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "version": {
-                            "type": "string",
-                            "description": "System version"
-                          },
-                          "update_available": {
-                            "type": "boolean",
-                            "description": "Whether an update is available"
-                          },
-                          "update_downloaded": {
-                            "type": "boolean",
-                            "description": "Whether the update has been downloaded"
-                          },
-                          "hostname": {
-                            "type": "string",
-                            "description": "System hostname"
-                          },
-                          "name": {
-                            "type": "string",
-                            "description": "System name"
-                          },
-                          "timezone": {
-                            "type": "string",
-                            "description": "System timezone"
-                          }
-                        }
-                      }
+                    "applicationVersion": {
+                      "type": "string",
+                      "description": "UniFi Network Application version"
                     }
                   }
-                },
-                "example": {
-                  "data": [
-                    {
-                      "version": "7.4.162",
-                      "update_available": true,
-                      "update_downloaded": false,
-                      "hostname": "unifi",
-                      "name": "UniFi Network",
-                      "timezone": "Europe/London"
-                    }
-                  ]
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/proxy/network/api/s/{site}/stat/alarms": {
-      "get": {
-        "summary": "Get system alarms",
-        "description": "Returns active and archived system alarms",
-        "parameters": [
-          {
-            "name": "site",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Site identifier"
           },
-          {
-            "name": "archived",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "Whether to include archived alarms"
-          }
-        ],
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "key": {
-                            "type": "string",
-                            "description": "Alarm identifier"
-                          },
-                          "msg": {
-                            "type": "string",
-                            "description": "Alarm message"
-                          },
-                          "time": {
-                            "type": "integer",
-                            "description": "Timestamp when alarm was triggered"
-                          },
-                          "archived": {
-                            "type": "boolean",
-                            "description": "Whether alarm is archived"
-                          },
-                          "severity": {
-                            "type": "string",
-                            "enum": ["info", "warning", "error"],
-                            "description": "Alarm severity"
-                          }
-                        }
-                      }
-                    }
-                  }
-                },
-                "example": {
-                  "data": [
-                    {
-                      "key": "EVT_AP_Lost_Contact",
-                      "msg": "Access Point lost contact",
-                      "time": 1705609846,
-                      "archived": false,
-                      "severity": "error"
-                    }
-                  ]
-                }
-              }
-            }
+          "401": {
+            "description": "Unauthorized - Invalid API key"
           }
         }
       }
@@ -1305,9 +353,8 @@
     "securitySchemes": {
       "ApiKeyAuth": {
         "type": "apiKey",
-        "in": "header",
         "name": "X-API-KEY",
-        "description": "API key obtained from UniFi Network Application"
+        "in": "header"
       }
     }
   }

@@ -38,3 +38,6 @@ logs/
 .windsurfrules
 *.swp
 .DS_Store
+
+# API response examples
+examples/
