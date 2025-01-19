@@ -41,6 +41,3 @@ logs/
 
 # API response examples
 examples/
-
-# Node.js
-node_modules/

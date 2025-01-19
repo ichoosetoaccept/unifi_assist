@@ -34,6 +34,15 @@ repos:
       - id: forbid-submodules
       - id: no-commit-to-branch
 
+  - repo: https://github.com/jackdewinter/pymarkdown
+    rev: main
+    hooks:
+      - id: pymarkdown
+        args:
+          - --disable-rules
+          - line-length  # We'll let ruff-format handle line wrapping
+          - scan
+
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.9.1
     hooks:
