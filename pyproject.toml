@@ -1,11 +1,25 @@
 [project]
 name = "unifi-assist"
 version = "0.1.0"
-description = "Add your description here"
+description = "UniFi Network Application Assistant"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "httpx>=0.28.1",
+    "aiohttp>=3.11.11",
     "pydantic>=2.10.5",
     "python-dotenv>=1.0.1",
+    "structlog>=25.1.0",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "strict"
+asyncio_default_fixture_loop_scope = "function"
+pythonpath = "."
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.0.1",
+    "pytest>=8.3.4",
+    "pytest-asyncio>=0.25.2",
+    "pytest-cov>=6.0.0",
 ]
