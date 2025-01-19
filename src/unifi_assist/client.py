@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Any, Dict
 import aiohttp
 import os
 import logging
@@ -54,11 +54,11 @@ class UniFiClient:
             headers={"Accept": "application/json", "X-API-KEY": self.api_key}
         )
 
-    async def close(self):
+    async def close(self) -> None:
         """Close the client session."""
         await self.session.close()
 
-    async def _get(self, endpoint: str) -> dict:
+    async def _get(self, endpoint: str) -> Dict[str, Any]:
         """Make a GET request to the UniFi API.
 
         Args:
@@ -73,9 +73,9 @@ class UniFiClient:
             response.raise_for_status()
             data = await response.json()
             self.logger.debug("get_request_complete", url=url, status=response.status)
-            return data
+            return dict(data)
 
-    async def _post(self, endpoint: str, data: dict) -> dict:
+    async def _post(self, endpoint: str, data: dict) -> Dict[str, Any]:
         """Make a POST request to the UniFi API.
 
         Args:
@@ -91,9 +91,9 @@ class UniFiClient:
             response.raise_for_status()
             resp_data = await response.json()
             self.logger.debug("post_request_complete", url=url, status=response.status)
-            return resp_data
+            return dict(resp_data)
 
-    async def get_sites(self) -> dict:
+    async def get_sites(self) -> Dict[str, Any]:
         """Get list of all sites.
 
         Returns:
@@ -101,7 +101,7 @@ class UniFiClient:
         """
         return await self._get("proxy/network/integration/v1/sites")
 
-    async def get_devices(self, site_id: str) -> dict:
+    async def get_devices(self, site_id: str) -> Dict[str, Any]:
         """Get list of all devices in a site.
 
         Args:
@@ -112,7 +112,7 @@ class UniFiClient:
         """
         return await self._get(f"proxy/network/integration/v1/sites/{site_id}/devices")
 
-    async def get_device_details(self, site_id: str, device_id: str) -> dict:
+    async def get_device_details(self, site_id: str, device_id: str) -> Dict[str, Any]:
         """Get detailed information about a specific device.
 
         Args:
@@ -126,7 +126,9 @@ class UniFiClient:
             f"proxy/network/integration/v1/sites/{site_id}/devices/{device_id}"
         )
 
-    async def get_device_statistics(self, site_id: str, device_id: str) -> dict:
+    async def get_device_statistics(
+        self, site_id: str, device_id: str
+    ) -> Dict[str, Any]:
         """Get statistics for a specific device.
 
         Args:
@@ -142,7 +144,7 @@ class UniFiClient:
 
     async def perform_device_action(
         self, site_id: str, device_id: str, action: dict
-    ) -> dict:
+    ) -> Dict[str, Any]:
         """Perform an action on a specific device.
 
         Args:
@@ -158,7 +160,7 @@ class UniFiClient:
             action,
         )
 
-    async def get_clients(self, site_id: str) -> dict:
+    async def get_clients(self, site_id: str) -> Dict[str, Any]:
         """Get list of all clients in a site.
 
         Args:
@@ -169,7 +171,7 @@ class UniFiClient:
         """
         return await self._get(f"proxy/network/integration/v1/sites/{site_id}/clients")
 
-    async def get_system_info(self) -> dict:
+    async def get_system_info(self) -> Dict[str, Any]:
         """Get system information.
 
         Returns:
@@ -177,12 +179,17 @@ class UniFiClient:
         """
         return await self._get("proxy/network/integration/v1/info")
 
-    async def __aenter__(self):
+    async def __aenter__(self) -> "UniFiClient":
         """Async context manager entry."""
         self.logger.debug("entering_async_context")
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
+    async def __aexit__(
+        self,
+        exc_type: Optional[type],
+        exc_val: Optional[Exception],
+        exc_tb: Optional[Any],
+    ) -> None:
         """Async context manager exit."""
         self.logger.debug("exiting_async_context")
         await self.close()

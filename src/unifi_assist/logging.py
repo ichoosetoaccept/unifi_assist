@@ -4,7 +4,7 @@ from typing import Optional
 import structlog
 import logging
 import sys
-from structlog.stdlib import LoggerFactory
+from structlog.stdlib import BoundLogger
 from structlog.processors import JSONRenderer
 
 
@@ -13,7 +13,7 @@ def setup_logging(
     log_level: Optional[str] = None,
     log_to_file: Optional[bool] = None,
     log_dir: str = "logs",
-) -> structlog.BoundLogger:
+) -> BoundLogger:
     """Setup structured logging configuration.
 
     Args:
@@ -65,7 +65,8 @@ def setup_logging(
         json_handler.setLevel(level)
         json_handler.setFormatter(
             structlog.stdlib.ProcessorFormatter(
-                processor=JSONRenderer(), foreign_pre_chain=shared_processors
+                processor=JSONRenderer(),
+                foreign_pre_chain=shared_processors,  # type: ignore
             )
         )
 
@@ -77,7 +78,7 @@ def setup_logging(
         readable_handler.setFormatter(
             structlog.stdlib.ProcessorFormatter(
                 processor=structlog.dev.ConsoleRenderer(colors=False),
-                foreign_pre_chain=shared_processors,
+                foreign_pre_chain=shared_processors,  # type: ignore
             )
         )
 
@@ -87,11 +88,11 @@ def setup_logging(
 
     # Configure structlog
     structlog.configure(
-        processors=console_processors,
+        processors=console_processors,  # type: ignore
         context_class=dict,
-        logger_factory=LoggerFactory(),
+        logger_factory=structlog.stdlib.LoggerFactory(),
         wrapper_class=structlog.stdlib.BoundLogger,
         cache_logger_on_first_use=True,
     )
 
-    return structlog.get_logger(name)
+    return structlog.get_logger(name)  # type: ignore[no-any-return]

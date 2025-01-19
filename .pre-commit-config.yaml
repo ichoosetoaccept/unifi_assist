@@ -43,18 +43,22 @@ repos:
       # Run the formatter.
       - id: ruff-format
 
-  # - repo: https://github.com/pyvista/pre-commit-mypy
-  #   rev: v0.1.0
-  #   hooks:
-  #     - id: mypy
-  #       pass_filenames: false
-  #       args: [] # Using mypy.ini for configuration
-  #       additional_dependencies:
-  #         - mypy>=1.14.1
-  #         - pydantic>=2.10.5
-  #         - pydantic-settings>=2.7.1
-  #         - pytest>=8.3.4
-  #         - python-dotenv>=1.0.1
+  - repo: https://github.com/pyvista/pre-commit-mypy
+    rev: v0.1.0
+    hooks:
+      - id: mypy
+        pass_filenames: false
+        args: []  # Using configuration from pyproject.toml
+        additional_dependencies:
+          - mypy>=1.14.1
+          - aiohttp>=3.11.11
+          - pydantic>=2.10.5
+          - pydantic-settings>=2.7.1
+          - python-dotenv>=1.0.1
+          - structlog>=25.1.0
+          - pytest>=8.3.4
+          - pytest-asyncio>=0.25.2
+          - pytest-cov>=6.0.0
 
   # monitor code complexity
   - repo: https://github.com/rubik/xenon
@@ -62,3 +66,24 @@ repos:
     hooks:
     - id: xenon
       args: ['--max-absolute=B', '--max-modules=B', '--max-average=A']
+
+  # .pre-commit-config.yaml
+  - repo: https://github.com/christophmeissner/pytest-pre-commit
+    rev: 1.0.0
+    hooks:
+      - id: pytest
+        pass_filenames: false
+        always_run: true
+        additional_dependencies:
+          - pytest-asyncio>=0.25.2
+          - aiohttp>=3.11.11
+          - pydantic>=2.10.5
+          - python-dotenv>=1.0.1
+          - structlog>=25.1.0
+        args:
+          - "--durations=0"
+          - "--last-failed"
+          - "--last-failed-no-failures=all"
+          - "--new-first"
+          - "-rfEsxXp"
+          - "-vvv"

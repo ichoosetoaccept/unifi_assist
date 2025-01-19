@@ -11,6 +11,7 @@ import os
 from datetime import datetime
 from dotenv import load_dotenv
 from pathlib import Path
+from typing import Optional, Dict, Any
 
 from unifi_assist.client import UniFiClient
 
@@ -25,7 +26,7 @@ EXAMPLES_DIR.mkdir(exist_ok=True)
 API_RESPONSES_DIR.mkdir(exist_ok=True)
 
 
-def save_response(name: str, data: dict, site: str = None):
+def save_response(name: str, data: Dict[str, Any], site: Optional[str] = None) -> None:
     """Save API response to a JSON file with metadata."""
     timestamp = datetime.now().isoformat()
 
@@ -50,7 +51,7 @@ def save_response(name: str, data: dict, site: str = None):
     print(f"Saved response to {filepath}")
 
 
-async def capture_responses(client: UniFiClient):
+async def capture_responses(client: UniFiClient) -> None:
     """Capture responses from various UniFi API endpoints."""
     # Get list of sites
     sites_response = await client.get_sites()
@@ -105,7 +106,8 @@ async def capture_responses(client: UniFiClient):
                 save_response(f"device_stats_{device_id}", device_stats, site_id)
 
 
-async def main():
+async def main() -> None:
+    """Main entry point."""
     # Load environment variables
     load_dotenv()
 

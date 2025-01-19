@@ -6,25 +6,29 @@ A Python-based tool to interact with the UniFi Network Application API.
 
 ## Overview
 
-This project uses the UniFi Network API to gather information about your UniFi network. It's built using Python and managed with `uv` package manager.
+This project uses the UniFi Network API to gather information about your UniFi
+network. It's built using Python and managed with `uv` package manager.
 
 ## UniFi Network API Capabilities
 
 The UniFi Network API allows you to:
 
 1. Device Management
+
    - List all devices in the network
    - Get detailed device information
    - Manage device settings
    - Perform device operations (restart, provision, etc.)
 
 2. Network Configuration
+
    - View and manage networks
    - Configure VLANs
    - Manage port forwarding rules
    - Handle firewall rules
 
 3. Client Management
+
    - List connected clients
    - View client statistics
    - Block/unblock clients
@@ -79,11 +83,13 @@ This will:
 
 ## Security Note
 
-Never commit API keys to version control. We recommend using environment variables or a secure configuration file for storing sensitive credentials.
+Never commit API keys to version control. We recommend using environment
+variables or a secure configuration file for storing sensitive credentials.
 
 ## Development Status
 
-This project is currently in initial development. Documentation will be updated as features are implemented.
+This project is currently in initial development. Documentation will be updated
+as features are implemented.
 
 ## Unifi Network API endpoints
 
@@ -92,10 +98,11 @@ UNIFI_HOST is set in `.env`.
 UNIFI_HOST/integration/v1/sites/{siteId}/devices/{deviceId}/actions - POST
 UNIFI_HOST/integration/v1/sites/{siteId}/devices - GET
 UNIFI_HOST/integration/v1/sites/{siteId}/devices/{deviceId} - GET
-UNIFI_HOST/integration/v1/sites/{siteId}/devices/{deviceId}/statistics/latest - GET
-UNIFI_HOST/integration/v1/sites - GET
+UNIFI_HOST/integration/v1/sites/{siteId}/devices/{deviceId}/statistics/latest -
+GET UNIFI_HOST/integration/v1/sites - GET
 UNIFI_HOST/integration/v1/sites/{siteId}/clients - GET
 UNIFI_HOST/integration/v1/info - GET
 
-The official Unifi example uses this: <https://unifi.ui.com/integration/v1/info>.
-This means that https:// may be required as well before UNIFI_HOST?
+The official Unifi example uses this:
+<https://unifi.ui.com/integration/v1/info>. This means that https:// may be
+required as well before UNIFI_HOST?
