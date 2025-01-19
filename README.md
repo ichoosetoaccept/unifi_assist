@@ -81,6 +81,46 @@ This will:
 - Install all development and runtime dependencies
 - Generate/update the lockfile
 
+### Commit Message Guidelines
+
+This project follows [Conventional Commits](https://www.conventionalcommits.org/) specification. Each commit message should be structured as follows:
+
+```text
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+Types:
+- `feat`: A new feature (minor version bump)
+- `fix`: A bug fix (patch version bump)
+- `docs`: Documentation only changes
+- `style`: Changes that don't affect code meaning
+- `refactor`: Code change that neither fixes a bug nor adds a feature
+- `perf`: Code change that improves performance
+- `test`: Adding missing tests or correcting existing tests
+- `chore`: Changes to build process or auxiliary tools
+
+Examples:
+
+```text
+feat(api): add device status endpoint
+fix: correct token refresh logic
+docs: update API authentication guide
+test(client): add test for error handling
+```
+
+Breaking Changes:
+For commits that break backward compatibility, add `BREAKING CHANGE:` in the footer or append a `!` after the type:
+
+```text
+feat!: remove deprecated login method
+
+BREAKING CHANGE: The `login` method has been removed. Use `authenticate` instead.
+```
+
 ## Security Note
 
 Never commit API keys to version control. We recommend using environment
