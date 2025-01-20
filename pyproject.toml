@@ -55,8 +55,16 @@ files = ["src", "scripts", "tests"]
 version_variables = ["src/unifi_assist/__init__.py:__version__"]
 commit_message = "chore: release v{version}"
 commit_parser = "angular"
-# Allow releases from main and test branches
-branches = { main = {}, "test/semantic-release" = {} }
+
+# Configure release groups for different branches
+[tool.semantic_release.branches.main]
+match = "main"
+prerelease = false
+
+[tool.semantic_release.branches.test]
+match = "test/semantic-release"
+prerelease = false
+
 upload_to_pypi = false
 upload_to_release = true
 
