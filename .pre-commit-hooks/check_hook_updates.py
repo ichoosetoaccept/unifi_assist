@@ -39,8 +39,10 @@ def main():
             return 0
 
     # Run pre-commit autoupdate in dry-run mode
-    result = subprocess.run(["pre-commit", "autoupdate", "--dry-run"], capture_output=True, text=True, shell=False)
-        ["pre-commit", "autoupdate", "--dry-run"], capture_output=True, text=True
+    result = run(
+        ["pre-commit", "autoupdate", "--dry-run"],
+        capture_output=True,
+        text=True,
     )
 
     # Look for lines indicating updates are available
@@ -50,12 +52,14 @@ def main():
             updates_available = True
             print(f"⚠️  {line}", file=sys.stderr)
 
-    update_last_check_time()
-
     if updates_available:
-        print("Run 'uv run pre-commit autoupdate' to update hooks", file=sys.stderr)
+        print(
+            "⚠️  Updates available for pre-commit hooks. Run 'pre-commit autoupdate' to update.",
+            file=sys.stderr,
+        )
         return 1
 
+    update_last_check_time()
     return 0
 
 
