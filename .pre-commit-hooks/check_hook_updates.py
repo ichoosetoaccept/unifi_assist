@@ -6,7 +6,7 @@ import json
 import shutil
 import sys
 from datetime import datetime, timedelta
-from subprocess import run, CalledProcessError, PIPE
+from subprocess import CalledProcessError, run
 
 
 def get_last_check_time():
@@ -54,6 +54,7 @@ def main():
     # Run pre-commit autoupdate in dry-run mode with explicit arguments
     try:
         pre_commit_path = os.path.abspath(get_pre_commit_path())
+        result = run(
             [pre_commit_path, "autoupdate", "--dry-run"],
             capture_output=True,
             text=True,
