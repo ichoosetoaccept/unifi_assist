@@ -59,6 +59,13 @@ def main():
     try:
         pre_commit_path = get_pre_commit_path()
 
+        # Safe from command injection:
+        # 1. Using subprocess.run with a list (not shell=True)
+        # 2. pre_commit_path is validated in get_pre_commit_path():
+        #    - Found using shutil.which()
+        #    - Verified with os.path.isfile() and os.access()
+        #    - Resolved to absolute path
+        # 3. Other arguments are hardcoded strings
         result = run(
             [pre_commit_path, "autoupdate", "--dry-run"],
             capture_output=True,
