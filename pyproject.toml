@@ -60,9 +60,6 @@ allow_zero_version = true
 no_git_verify = false
 tag_format = "{version}"
 version_toml = ["pyproject.toml:project.version"]
-commit = false  # Don't commit during release
-push = false   # Don't push commits
-tag = true     # Do create tags
 version_source = "tag"  # Use tags for version tracking
 
 [tool.semantic_release.branches.main]
