@@ -5,7 +5,6 @@ import os
 import json
 import shutil
 import sys
-import shlex
 from datetime import datetime, timedelta
 from subprocess import CalledProcessError, run
 
@@ -37,6 +36,13 @@ def get_pre_commit_path():
     if not pre_commit_path:
         print("⚠️  pre-commit not found in PATH", file=sys.stderr)
         sys.exit(1)
+    pre_commit_path = os.path.abspath(pre_commit_path)
+    if not os.path.isfile(pre_commit_path) or not os.access(
+        pre_commit_path,
+        os.X_OK,
+    ):
+        print(f"⚠️  Invalid pre-commit path: {pre_commit_path}", file=sys.stderr)
+        sys.exit(1)
     return pre_commit_path
 
 
@@ -49,26 +55,9 @@ def main():
         if time_since_check < timedelta(days=1):
             return 0
 
-    # Get absolute path to pre-commit
-    pre_commit_path = get_pre_commit_path()
-
     # Run pre-commit autoupdate in dry-run mode with explicit arguments
     try:
-        pre_commit_path = os.path.abspath(get_pre_commit_path())
-def get_pre_commit_path():
-    """Get the absolute path to pre-commit executable."""
-    pre_commit_path = shutil.which("pre-commit")
-    if not pre_commit_path:
-        print("⚠️  pre-commit not found in PATH", file=sys.stderr)
-        sys.exit(1)
-    pre_commit_path = os.path.abspath(pre_commit_path)
-    if not os.path.isfile(pre_commit_path) or not os.access(
-        pre_commit_path,
-        os.X_OK,
-    ):
-        print(f"⚠️  Invalid pre-commit path: {pre_commit_path}", file=sys.stderr)
-        sys.exit(1)
-    return pre_commit_path
+        pre_commit_path = get_pre_commit_path()
 
         result = run(
             [pre_commit_path, "autoupdate", "--dry-run"],
