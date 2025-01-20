@@ -55,14 +55,20 @@ def main():
     # Run pre-commit autoupdate in dry-run mode with explicit arguments
     try:
         pre_commit_path = os.path.abspath(get_pre_commit_path())
-
-        # Validate pre-commit path before execution
-        if not os.path.isfile(pre_commit_path) or not os.access(
-            pre_commit_path,
-            os.X_OK,
-        ):
-            print(f"⚠️  Invalid pre-commit path: {pre_commit_path}", file=sys.stderr)
-            return 1
+def get_pre_commit_path():
+    """Get the absolute path to pre-commit executable."""
+    pre_commit_path = shutil.which("pre-commit")
+    if not pre_commit_path:
+        print("⚠️  pre-commit not found in PATH", file=sys.stderr)
+        sys.exit(1)
+    pre_commit_path = os.path.abspath(pre_commit_path)
+    if not os.path.isfile(pre_commit_path) or not os.access(
+        pre_commit_path,
+        os.X_OK,
+    ):
+        print(f"⚠️  Invalid pre-commit path: {pre_commit_path}", file=sys.stderr)
+        sys.exit(1)
+    return pre_commit_path
 
         result = run(
             [pre_commit_path, "autoupdate", "--dry-run"],
