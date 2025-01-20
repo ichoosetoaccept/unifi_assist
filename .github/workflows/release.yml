@@ -7,38 +7,27 @@ on:
 
 jobs:
   release:
-    # Only run if PR was merged (not just closed)
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     concurrency: release
 
     permissions:
-      contents: write  # to be able to publish a GitHub release
-      issues: write # to be able to comment on released issues
-      pull-requests: write # to be able to comment on released pull requests
+      contents: write
+      issues: write
+      pull-requests: write
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ github.sha }}
-
-      - name: Force correct release branch
-        # Force branch creation at exact merge commit to ensure semantic-release has correct context
-        run: |
-          git checkout -B ${{ github.ref_name }} ${{ github.sha }}
 
       - name: Python Semantic Release
         uses: python-semantic-release/python-semantic-release@v9.16.1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          # Use GitHub Actions bot identity for release commits
+          github_token: ${{ secrets.GITHUB_TOKEN }}  # Regular GITHUB_TOKEN is fine since we're not committing
           git_committer_name: "github-actions"
           git_committer_email: "actions@users.noreply.github.com"
-          # Don't commit/push to main (would fail branch protection)
           commit: false
           push: false
-          # Do create a release
           tag: true
           vcs_release: true
