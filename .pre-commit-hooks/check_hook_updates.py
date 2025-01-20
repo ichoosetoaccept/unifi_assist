@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Check if any pre-commit hooks have updates available."""
 
-from subprocess import run
-import sys
-from datetime import datetime, timedelta
 import os
 import json
+import shutil
+import sys
+from datetime import datetime, timedelta
+from subprocess import run, CalledProcessError
 
 
 def get_last_check_time():
@@ -29,6 +30,15 @@ def update_last_check_time():
         json.dump({"last_check": datetime.now().isoformat()}, f)
 
 
+def get_pre_commit_path():
+    """Get the absolute path to pre-commit executable."""
+    pre_commit_path = shutil.which("pre-commit")
+    if not pre_commit_path:
+        print("⚠️  pre-commit not found in PATH", file=sys.stderr)
+        sys.exit(1)
+    return pre_commit_path
+
+
 def main():
     """Main function."""
     # Only check once per day
@@ -38,10 +48,20 @@ def main():
         if time_since_check < timedelta(days=1):
             return 0
 
-    # Run pre-commit autoupdate in dry-run mode
-    result = subprocess.run(["pre-commit", "autoupdate", "--dry-run"], capture_output=True, text=True, shell=False)
-        ["pre-commit", "autoupdate", "--dry-run"], capture_output=True, text=True
-    )
+    # Get absolute path to pre-commit
+    pre_commit_path = get_pre_commit_path()
+
+    # Run pre-commit autoupdate in dry-run mode with explicit arguments
+    try:
+        result = run(
+            [pre_commit_path, "autoupdate", "--dry-run"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+    except CalledProcessError as e:
+        print(f"⚠️  Error running pre-commit: {e}", file=sys.stderr)
+        return 1
 
     # Look for lines indicating updates are available
     updates_available = False
@@ -50,12 +70,14 @@ def main():
             updates_available = True
             print(f"⚠️  {line}", file=sys.stderr)
 
-    update_last_check_time()
-
     if updates_available:
-        print("Run 'uv run pre-commit autoupdate' to update hooks", file=sys.stderr)
+        print(
+            "⚠️  Updates available for pre-commit hooks. Run 'pre-commit autoupdate' to update.",
+            file=sys.stderr,
+        )
         return 1
 
+    update_last_check_time()
     return 0
 
 
