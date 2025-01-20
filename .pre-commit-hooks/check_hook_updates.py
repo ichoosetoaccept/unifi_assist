@@ -39,7 +39,7 @@ def main():
             return 0
 
     # Run pre-commit autoupdate in dry-run mode
-    result = subprocess.run(
+    result = subprocess.run(["pre-commit", "autoupdate", "--dry-run"], capture_output=True, text=True, shell=False)
         ["pre-commit", "autoupdate", "--dry-run"], capture_output=True, text=True
     )
 
