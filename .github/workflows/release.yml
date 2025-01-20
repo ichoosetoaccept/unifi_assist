@@ -1,0 +1,41 @@
+name: Release
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+permissions:
+  contents: read # for checkout
+
+jobs:
+  release:
+    # Only run if PR was merged (not just closed)
+    if: github.event.pull_request.merged == true
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Using default plugins: @semantic-release/commit-analyzer, @semantic-release/release-notes-generator, @semantic-release/github
+        # Adding @semantic-release/changelog and @semantic-release/git for changelog management
+        run: |
+          npx semantic-release \
+            @semantic-release/changelog \
+            @semantic-release/git
