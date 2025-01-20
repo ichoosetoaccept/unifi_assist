@@ -6,7 +6,7 @@ import json
 import shutil
 import sys
 from datetime import datetime, timedelta
-from subprocess import run, CalledProcessError
+from subprocess import run, CalledProcessError, PIPE
 
 
 def get_last_check_time():
