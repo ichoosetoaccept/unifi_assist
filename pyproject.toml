@@ -1,6 +1,6 @@
 [project]
 name = "unifi-assist"
-version = "0.1.0"
+version = "0.0.0.dev0"
 description = "UniFi Network Application Assistant"
 readme = "README.md"
 requires-python = ">=3.13"
@@ -59,8 +59,8 @@ major_on_zero = true
 allow_zero_version = true
 no_git_verify = false
 tag_format = "{version}"
-version_toml = ["pyproject.toml:project.version"]
-version_source = "tag"  # Use tags for version tracking
+version_toml = ["pyproject.toml:project.version"]  # This is fine even with 0.0.0-development
+version_source = "tag"
 
 [tool.semantic_release.branches.main]
 match = "(main|master)"
@@ -86,3 +86,7 @@ insecure = false
 [tool.semantic_release.publish]
 dist_glob_patterns = ["dist/*"]
 upload_to_vcs_release = true
+
+[tool.semantic_release.changelog]
+template_dir = false
+changelog_file = "CHANGELOG.md"
