@@ -6,7 +6,7 @@ import json
 import shutil
 import sys
 from datetime import datetime, timedelta
-from subprocess import run, CalledProcessError, PIPE
+from subprocess import CalledProcessError, run
 
 
 def get_last_check_time():
@@ -36,6 +36,13 @@ def get_pre_commit_path():
     if not pre_commit_path:
         print("⚠️  pre-commit not found in PATH", file=sys.stderr)
         sys.exit(1)
+    pre_commit_path = os.path.abspath(pre_commit_path)
+    if not os.path.isfile(pre_commit_path) or not os.access(
+        pre_commit_path,
+        os.X_OK,
+    ):
+        print(f"⚠️  Invalid pre-commit path: {pre_commit_path}", file=sys.stderr)
+        sys.exit(1)
     return pre_commit_path
 
 
@@ -48,12 +55,18 @@ def main():
         if time_since_check < timedelta(days=1):
             return 0
 
-    # Get absolute path to pre-commit
-    pre_commit_path = get_pre_commit_path()
-
     # Run pre-commit autoupdate in dry-run mode with explicit arguments
     try:
-        pre_commit_path = os.path.abspath(get_pre_commit_path())
+        pre_commit_path = get_pre_commit_path()
+
+        # Safe from command injection:
+        # 1. Using subprocess.run with a list (not shell=True)
+        # 2. pre_commit_path is validated in get_pre_commit_path():
+        #    - Found using shutil.which()
+        #    - Verified with os.path.isfile() and os.access()
+        #    - Resolved to absolute path
+        # 3. Other arguments are hardcoded strings
+        result = run(
             [pre_commit_path, "autoupdate", "--dry-run"],
             capture_output=True,
             text=True,
