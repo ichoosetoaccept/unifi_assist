@@ -5,6 +5,7 @@ import os
 import json
 import shutil
 import sys
+import shlex
 from datetime import datetime, timedelta
 from subprocess import CalledProcessError, run
 
@@ -57,13 +58,14 @@ def main():
 
         # Validate pre-commit path before execution
         if not os.path.isfile(pre_commit_path) or not os.access(
-            pre_commit_path, os.X_OK
+            pre_commit_path,
+            os.X_OK,
         ):
             print(f"⚠️  Invalid pre-commit path: {pre_commit_path}", file=sys.stderr)
             return 1
 
         result = run(
-            [pre_commit_path, "autoupdate", "--dry-run"],
+            [shlex.quote(pre_commit_path), "autoupdate", "--dry-run"],
             capture_output=True,
             text=True,
             check=True,
