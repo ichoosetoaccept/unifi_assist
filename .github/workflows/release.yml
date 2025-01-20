@@ -25,12 +25,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Python Semantic Release
+        uses: python-semantic-release/python-semantic-release@master
         with:
-          node-version: "lts/*"
-
-      - name: Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+          github_token: ${{ secrets.GITHUB_TOKEN }}

@@ -49,3 +49,21 @@ strict_equality = true
 
 # Paths to check
 files = ["src", "scripts", "tests"]
+
+[tool.semantic_release]
+version_variables = ["src/unifi_assist/__init__.py:__version__"]
+commit_message = "chore: release v{version}"
+commit_parser = "angular"
+branch = "main"
+upload_to_pypi = false
+upload_to_release = true
+
+[tool.semantic_release.changelog]
+# Create/update a CHANGELOG.md file
+changelog_file = "CHANGELOG.md"
+# Use Markdown format
+output_format = "md"
+# Don't show a generic message for first release
+mask_initial_release = false
+# Initialize changelog from scratch each time
+mode = "init"
