@@ -1,5 +1,6 @@
 # UniFi Network Assistant
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/e387cd02a04f48679820fc5e52a770d0)](https://app.codacy.com/gh/ichoosetoaccept/unifi_assist?utm_source=github.com&utm_medium=referral&utm_content=ichoosetoaccept/unifi_assist&utm_campaign=Badge_Grade)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 
 A Python-based tool to interact with the UniFi Network Application API.
