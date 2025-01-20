@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Check if any pre-commit hooks have updates available."""
 
-import subprocess
+from subprocess import run
 import sys
 from datetime import datetime, timedelta
 import os
