@@ -30,5 +30,6 @@ jobs:
         uses: python-semantic-release/python-semantic-release@v9.16.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Use GitHub Actions bot identity for release commits
           git_committer_name: "github-actions"
           git_committer_email: "actions@users.noreply.github.com"
