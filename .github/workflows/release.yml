@@ -23,6 +23,7 @@ jobs:
           ref: ${{ github.sha }}
 
       - name: Force correct release branch
+        # Force branch creation at exact merge commit to ensure semantic-release has correct context
         run: |
           git checkout -B ${{ github.ref_name }} ${{ github.sha }}
 
