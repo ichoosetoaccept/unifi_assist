@@ -1,4 +1,5 @@
 name: Release
+
 on:
   pull_request:
     branches: [main]
@@ -8,12 +9,11 @@ jobs:
   release:
     # Only run if PR was merged (not just closed)
     if: github.event.pull_request.merged == true
-    name: Release
     runs-on: ubuntu-latest
+    concurrency: release
+
     permissions:
-      contents: write # to be able to publish a GitHub release
-      issues: write # to be able to comment on released issues
-      pull-requests: write # to be able to comment on released pull requests
+      contents: write  # to be able to publish a GitHub release
 
     steps:
       - name: Checkout
