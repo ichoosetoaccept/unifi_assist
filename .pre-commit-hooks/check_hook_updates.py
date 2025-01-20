@@ -65,7 +65,7 @@ def main():
             return 1
 
         result = run(
-            [shlex.quote(pre_commit_path), "autoupdate", "--dry-run"],
+            [pre_commit_path, "autoupdate", "--dry-run"],
             capture_output=True,
             text=True,
             check=True,
