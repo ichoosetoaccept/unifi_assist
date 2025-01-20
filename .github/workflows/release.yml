@@ -20,8 +20,15 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.sha }}
+
+      - name: Force correct release branch
+        run: |
+          git checkout -B ${{ github.ref_name }} ${{ github.sha }}
 
       - name: Python Semantic Release
         uses: python-semantic-release/python-semantic-release@v9.16.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          git_committer_name: "github-actions"
+          git_committer_email: "actions@users.noreply.github.com"
