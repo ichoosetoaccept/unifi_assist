@@ -30,7 +30,19 @@ def update_last_check_time():
 
 
 def main():
-    """Main function."""
+    """
+    Check for available pre-commit hook updates and manage update check frequency.
+    
+    This function performs a daily check for pre-commit hook updates. It prevents redundant checks by tracking the last update check time and only proceeds if more than a day has passed since the previous check.
+    
+    The function runs `pre-commit autoupdate` in dry-run mode to identify potential hook updates without making changes. If updates are detected, it prints warning messages to stderr and returns a non-zero status code.
+    
+    Returns:
+        int: 0 if no updates are available or check is skipped, 1 if updates are found
+    
+    Raises:
+        subprocess.CalledProcessError: If the pre-commit command fails to execute
+    """
     # Only check once per day
     last_check = get_last_check_time()
     if last_check:
