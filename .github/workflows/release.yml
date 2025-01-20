@@ -34,3 +34,6 @@ jobs:
           # Use GitHub Actions bot identity for release commits
           git_committer_name: "github-actions"
           git_committer_email: "actions@users.noreply.github.com"
+          # Don't commit/push to main (would fail branch protection)
+          # Instead just create the release and tag
+          root_options: "--no-commit --vcs-release"
