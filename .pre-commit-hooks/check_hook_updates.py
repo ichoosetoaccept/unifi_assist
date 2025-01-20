@@ -5,7 +5,6 @@ import os
 import json
 import shutil
 import sys
-import shlex
 from datetime import datetime, timedelta
 from subprocess import CalledProcessError, run
 
@@ -61,7 +60,7 @@ def main():
         pre_commit_path = get_pre_commit_path()
 
         result = run(
-            [shlex.quote(pre_commit_path), "autoupdate", "--dry-run"],
+            [pre_commit_path, "autoupdate", "--dry-run"],
             capture_output=True,
             text=True,
             check=True,
