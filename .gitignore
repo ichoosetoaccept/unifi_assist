@@ -23,14 +23,17 @@ wheels/
 .installed.cfg
 *.egg
 
-# Testing
-.coverage
+# Python tool caches
+.mypy_cache/
+.ruff_cache/
 .pytest_cache/
+.coverage
 htmlcov/
 
-# Logs
-logs/
-*.log
+# Virtual environments
+.venv/
+venv/
+ENV/
 
 # IDE
 .idea/
@@ -38,6 +41,10 @@ logs/
 .windsurfrules
 *.swp
 .DS_Store
+
+# Logs
+logs/
+*.log
 
 # API response examples
 examples/
