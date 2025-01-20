@@ -31,3 +31,4 @@ jobs:
           push: false
           tag: true
           vcs_release: true
+          root_options: "--verbosity=DEBUG"  # Add this line
