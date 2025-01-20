@@ -55,6 +55,7 @@ files = ["src", "scripts", "tests"]
 version_variables = ["src/unifi_assist/__init__.py:__version__"]
 commit_message = "chore: release v{version}"
 commit_parser = "angular"
+tag_format = "{version}"  # Remove the 'v' prefix to match our existing tags
 
 # Configure release groups for different branches
 [tool.semantic_release.branches.main]
