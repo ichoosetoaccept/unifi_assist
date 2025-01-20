@@ -33,9 +33,4 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        # Using default plugins: @semantic-release/commit-analyzer, @semantic-release/release-notes-generator, @semantic-release/github
-        # Adding @semantic-release/changelog and @semantic-release/git for changelog management
-        run: |
-          npx semantic-release \
-            @semantic-release/changelog \
-            @semantic-release/git
+        run: npx semantic-release
