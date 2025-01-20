@@ -1,12 +1,8 @@
 name: Release
 on:
   pull_request:
-    types: [closed]
-    branches:
-      - main
-
-permissions:
-  contents: read # for checkout
+    branches: [ main ]
+    types: [ closed ]
 
 jobs:
   release:

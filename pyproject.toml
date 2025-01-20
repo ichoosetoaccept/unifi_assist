@@ -76,5 +76,5 @@ changelog_file = "CHANGELOG.md"
 output_format = "md"
 # Don't show a generic message for first release
 mask_initial_release = false
-# Initialize changelog from scratch each time
-mode = "init"
+# Append to the existing changelog
+mode = "append"
