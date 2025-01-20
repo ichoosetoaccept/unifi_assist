@@ -53,7 +53,7 @@ def main():
 
     # Run pre-commit autoupdate in dry-run mode with explicit arguments
     try:
-        result = run(
+        pre_commit_path = os.path.abspath(get_pre_commit_path())
             [pre_commit_path, "autoupdate", "--dry-run"],
             capture_output=True,
             text=True,
