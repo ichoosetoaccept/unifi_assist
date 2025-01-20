@@ -11,34 +11,14 @@ network. It's built using Python and managed with `uv` package manager.
 
 ## UniFi Network API Capabilities
 
-The UniFi Network API allows you to:
+The UniFi Network API provides comprehensive network management capabilities:
 
-1. Device Management
-
-   - List all devices in the network
-   - Get detailed device information
-   - Manage device settings
-   - Perform device operations (restart, provision, etc.)
-
-2. Network Configuration
-
-   - View and manage networks
-   - Configure VLANs
-   - Manage port forwarding rules
-   - Handle firewall rules
-
-3. Client Management
-
-   - List connected clients
-   - View client statistics
-   - Block/unblock clients
-   - Manage client groups
-
-4. Statistics and Monitoring
-   - Get system statistics
-   - Monitor network health
-   - View bandwidth usage
-   - Access event logs
+| Category | Capabilities | Example Endpoints |
+|----------|--------------|------------------|
+| Device Management | • List all devices • Get device details • Manage settings • Perform operations (restart, provision) | `GET /proxy/network/integration/v1/sites/{site}/devices` • `GET /proxy/network/integration/v1/sites/{site}/devices/{id}` • `POST /proxy/network/integration/v1/sites/{site}/devices/{id}/actions` |
+| Network Configuration | • View/manage networks • Configure VLANs • Manage port forwarding • Handle firewall rules | `GET /proxy/network/integration/v1/sites/{site}/settings` • `GET /proxy/network/integration/v1/sites/{site}/vlans` • `POST /proxy/network/integration/v1/sites/{site}/settings` |
+| Client Management | • List connected clients • View client statistics • Block/unblock clients • Manage client groups | `GET /proxy/network/integration/v1/sites/{site}/clients` • `GET /proxy/network/integration/v1/sites/{site}/client/{mac}` • `POST /proxy/network/integration/v1/sites/{site}/client/{mac}/block` |
+| Statistics & Monitoring | • System statistics • Network health • Bandwidth usage • Event logs | `GET /proxy/network/integration/v1/sites/{site}/health` • `GET /proxy/network/integration/v1/sites/{site}/stats` • `GET /proxy/network/integration/v1/sites/{site}/devices/{id}/statistics/latest` |
 
 ## Authentication
 
@@ -81,6 +61,47 @@ This will:
 - Install all development and runtime dependencies
 - Generate/update the lockfile
 
+### Commit Message Guidelines
+
+This project follows [Conventional Commits](https://www.conventionalcommits.org/) specification. Each commit message should be structured as follows:
+
+```text
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+Types:
+
+- `feat`: A new feature (minor version bump)
+- `fix`: A bug fix (patch version bump)
+- `docs`: Documentation only changes
+- `style`: Changes that don't affect code meaning
+- `refactor`: Code change that neither fixes a bug nor adds a feature
+- `perf`: Code change that improves performance
+- `test`: Adding missing tests or correcting existing tests
+- `chore`: Changes to build process or auxiliary tools
+
+Examples:
+
+```text
+feat(api): add device status endpoint
+fix: correct token refresh logic
+docs: update API authentication guide
+test(client): add test for error handling
+```
+
+Breaking Changes:
+For commits that break backward compatibility, add `BREAKING CHANGE:` in the footer or append a `!` after the type:
+
+```text
+feat!: remove deprecated login method
+
+BREAKING CHANGE: The `login` method has been removed. Use `authenticate` instead.
+```
+
 ## Security Note
 
 Never commit API keys to version control. We recommend using environment
@@ -90,19 +111,3 @@ variables or a secure configuration file for storing sensitive credentials.
 
 This project is currently in initial development. Documentation will be updated
 as features are implemented.
-
-## Unifi Network API endpoints
-
-UNIFI_HOST is set in `.env`.
-
-UNIFI_HOST/integration/v1/sites/{siteId}/devices/{deviceId}/actions - POST
-UNIFI_HOST/integration/v1/sites/{siteId}/devices - GET
-UNIFI_HOST/integration/v1/sites/{siteId}/devices/{deviceId} - GET
-UNIFI_HOST/integration/v1/sites/{siteId}/devices/{deviceId}/statistics/latest -
-GET UNIFI_HOST/integration/v1/sites - GET
-UNIFI_HOST/integration/v1/sites/{siteId}/clients - GET
-UNIFI_HOST/integration/v1/info - GET
-
-The official Unifi example uses this:
-<https://unifi.ui.com/integration/v1/info>. This means that https:// may be
-required as well before UNIFI_HOST?

@@ -1,5 +1,20 @@
 # UniFi Assist Development Plan
 
+## Phase 0: Project Setup
+
+- 🚧 Implement semantic-release
+  - ✅ Install and configure semantic-release (configured in .releaserc.json)
+  - ✅ Set up commit message validation (using conventional-pre-commit)
+  - ✅ Configure CI/CD pipeline for automated releases (GitHub Actions)
+  - ✅ Document release process and commit conventions in README.md
+  - 🚧 Test semantic-release workflow with a PR
+- ✅ Git Workflow
+  - ✅ Configure branch protection for `main` (using pre-commit hook)
+  - ✅ Document simple branching strategy in README.md
+- ✅ Pre-commit Maintenance
+  - ✅ Add hook to check for pre-commit updates
+  - ✅ Configure daily update checks
+
 ## Phase 1: Foundation Improvements
 
 - ✅ Add real API response examples
